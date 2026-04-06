@@ -931,7 +931,7 @@
         document.getElementById('leaveList').innerHTML  = '<div class="empty-state">ไม่พบข้อมูล</div>';
         return;
       }
-      renderAttendList(d.attendance || []);
+      renderAttendList(d.attendance || d.rows || []);
       renderLeaveList(d.leaves || []);
     }).catch(function() {
       document.getElementById('attendList').innerHTML = '<div class="empty-state">โหลดไม่ได้ ลองใหม่</div>';
@@ -1000,7 +1000,7 @@
     dashLoaded = true;
     callServer('getDashboardData', [myLineId]).then(function(d) {
       if (!d.success) return;
-      _allMembers = d.members || [];
+      _allMembers = d.members || d.staff || [];
       var cnt = { inwork: 0, standby: 0, offwork: 0, absent: 0, dayoff: 0 };
       _allMembers.forEach(function(m) { cnt[getMemberStatus(m)]++; });
       document.getElementById('numInWork').textContent  = cnt.inwork;
