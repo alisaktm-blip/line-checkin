@@ -263,6 +263,8 @@
     .dash-card .dc-num.red    { color: var(--c4); }
     .dash-card .dc-num.blue   { color: var(--c2); }
     .dash-card .dc-num.purple { color: var(--c3); }
+    .dash-card .dc-num.orange { color: #F09030; }
+    .dash-card .dc-num.teal   { color: #30C0A0; }
     .dash-card .dc-label {
       font-size: 11px;
       color: var(--sub);
@@ -315,7 +317,9 @@
     .badge.leave   { background: rgba(240,96,192,0.15);  color: var(--c4); }
     .badge.absent  { background: rgba(240,96,192,0.15);  color: var(--c4); }
     .badge.offwork { background: rgba(91,143,237,0.15);  color: var(--c2); }
-    .badge.dayoff  { background: rgba(160,96,232,0.15);  color: var(--c3); }
+    .badge.dayoff   { background: rgba(160,96,232,0.15);  color: var(--c3); }
+    .badge.overtime { background: rgba(240,150,48,0.15);  color: #F09030; }
+    .badge.onleave  { background: rgba(48,192,160,0.15);  color: #30C0A0; }
 
     /* HISTORY LIST */
     .history-list { padding: 0 16px; display: flex; flex-direction: column; gap: 8px; }
@@ -649,13 +653,17 @@
         <div class="dc-num blue" id="numOffWork">0</div>
         <div class="dc-label">Off Work</div>
       </div>
-      <div class="dash-card" id="dc-absent" onclick="filterStaff('absent')">
-        <div class="dc-num red" id="numAbsent">0</div>
-        <div class="dc-label">Absent</div>
+      <div class="dash-card" id="dc-overtime" onclick="filterStaff('overtime')">
+        <div class="dc-num orange" id="numOvertime">0</div>
+        <div class="dc-label">⌛️ เลยเวลางาน</div>
       </div>
       <div class="dash-card" id="dc-dayoff" onclick="filterStaff('dayoff')">
         <div class="dc-num purple" id="numDayOff">0</div>
         <div class="dc-label">Day Off</div>
+      </div>
+      <div class="dash-card" id="dc-onleave" onclick="filterStaff('onleave')">
+        <div class="dc-num teal" id="numOnLeave">0</div>
+        <div class="dc-label">On Leave</div>
       </div>
     </div>
     <div class="staff-list" id="staffList"><div class="empty-state">กำลังโหลด...</div></div>
@@ -979,16 +987,17 @@
   var _allMembers = [];
 
   function getMemberStatus(m) {
-    if (m.status === 'Day Off')                          return 'dayoff';
-    if (m.clockOut || m.status === 'Off work')           return 'offwork';
-    if (m.clockIn  || m.status === 'In work')            return 'inwork';
-    if (m.status === 'Leave' || m.status === 'Absent')   return 'absent';
+    if (m.status === 'Day Off')                return 'dayoff';
+    if (m.clockOut || m.status === 'Off work') return 'offwork';
+    if (m.clockIn  || m.status === 'In work')  return 'inwork';
+    if (m.status === 'Leave')                  return 'onleave';
+    if (m.isOvertime)                          return 'overtime';
     return 'standby';
   }
 
   function filterStaff(status) {
     currentFilter = (currentFilter === status) ? null : status;
-    ['inwork','standby','offwork','absent','dayoff'].forEach(function(s) {
+    ['inwork','standby','offwork','overtime','dayoff','onleave'].forEach(function(s) {
       var card = document.getElementById('dc-' + s);
       if (card) card.className = 'dash-card' + (currentFilter === s ? ' active-filter' : '');
     });
@@ -1001,13 +1010,14 @@
     callServer('getDashboardData', [myLineId]).then(function(d) {
       if (!d.success) return;
       _allMembers = d.members || d.staff || [];
-      var cnt = { inwork: 0, standby: 0, offwork: 0, absent: 0, dayoff: 0 };
+      var cnt = { inwork: 0, standby: 0, offwork: 0, overtime: 0, dayoff: 0, onleave: 0 };
       _allMembers.forEach(function(m) { cnt[getMemberStatus(m)]++; });
-      document.getElementById('numInWork').textContent  = cnt.inwork;
-      document.getElementById('numStandBy').textContent = cnt.standby;
-      document.getElementById('numOffWork').textContent = cnt.offwork;
-      document.getElementById('numAbsent').textContent  = cnt.absent;
-      document.getElementById('numDayOff').textContent  = cnt.dayoff;
+      document.getElementById('numInWork').textContent   = cnt.inwork;
+      document.getElementById('numStandBy').textContent  = cnt.standby;
+      document.getElementById('numOffWork').textContent  = cnt.offwork;
+      document.getElementById('numOvertime').textContent = cnt.overtime;
+      document.getElementById('numDayOff').textContent   = cnt.dayoff;
+      document.getElementById('numOnLeave').textContent  = cnt.onleave;
       renderStaffList(_allMembers);
     });
     callServer('getAllLeaves', []).then(function(d) {
@@ -1023,12 +1033,13 @@
       el.innerHTML = '<div class="empty-state">' + (currentFilter ? 'ไม่มีพนักงานในสถานะนี้' : 'ไม่มีข้อมูลพนักงาน') + '</div>';
       return;
     }
-    var _lbl = { inwork: 'In Work', standby: 'Standby', offwork: 'Off Work', absent: 'Absent', dayoff: 'Day Off' };
+    var _lbl = { inwork: 'In Work', standby: 'Standby', offwork: 'Off Work', overtime: '⌛️ เลยเวลางาน', dayoff: 'Day Off', onleave: 'On Leave' };
     el.innerHTML = list.map(function(m){
       var sc     = getMemberStatus(m);
       var detail = m.clockIn ? (m.isLate ? '⚠️ เข้าLate ' + m.clockIn : '⏰ เข้า ' + m.clockIn) : 'ยังไม่ได้ clock in';
-      if (sc === 'dayoff')  detail = '📆 วันหยุด';
-      if (sc === 'absent')  detail = detail || '❌ ขาดงาน';
+      if (sc === 'dayoff')   detail = '📆 วันหยุด';
+      if (sc === 'overtime') detail = '⌛️ เลยเวลางาน';
+      if (sc === 'onleave')  detail = '🌴 ลางาน';
       if (m.clockOut) detail += ' → ออก ' + m.clockOut;
       return '<div class="staff-item">' +
         '<div class="avatar">' + (m.name||'?').charAt(0) + '</div>' +
