@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -9,13 +9,13 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: ;  padding: 0; }
     :root {
       --c1: #2EDFC5;
-      --c2: #5B8FED;
+      --c2: #5B8FED
       --c3: #A060E8;
       --c4: #F060C0;
-      --grad: linear-gradient(135deg, #2EDFC5 0%, #5B8FED 33%, #A060E8 66%, #F060C0 100%);
+      --grad: linear-gradient(135deg, #2EDFC5 0%, #5B8FE 33%, #A060E8 66%, #F060C0 100%);
       --bg: #0A0F1E;
       --card: #141929;
       --card2: #1C2340;
@@ -317,7 +317,7 @@
     .badge.leave   { background: rgba(240,96,192,0.15);  color: var(--c4); }
     .badge.absent  { background: rgba(240,96,192,0.15);  color: var(--c4); }
     .badge.offwork { background: rgba(91,143,237,0.15);  color: var(--c2); }
-    .badge.dayoff   { background: rgba(160,96,232,0.15);  color: var(--c3); }
+    .badge.dayoff  { background: rgba(160,96,232,0.15);  color: var(--c3); }
     .badge.overtime { background: rgba(240,150,48,0.15);  color: #F09030; }
     .badge.onleave  { background: rgba(48,192,160,0.15);  color: #30C0A0; }
 
@@ -375,12 +375,38 @@
     .leave-item.rejected .btn-row { display: none; }
     .l-status.approved { background: rgba(46,223,197,0.2);  color: var(--c1); }
     .l-status.rejected { background: rgba(240,96,192,0.2);  color: var(--c4); }
+    .l-approved-note {
+      font-size: 12px;
+      color: var(--c1);
+      margin-top: 8px;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      opacity: 0.8;
+    }
     .leave-item .l-cover {
       font-size: 12px;
       color: var(--sub);
       margin-top: 4px;
       font-family: 'IBM Plex Sans Thai', sans-serif;
     }
+    .leave-item.approved {
+      border-color: rgba(46,223,197,0.3);
+    }
+    .leave-item.approved .l-cover strong {
+      color: var(--c1);
+      font-family: 'Outfit', 'Inter', sans-serif;
+    }
+    .leave-section-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--sub);
+      padding: 10px 4px 6px;
+      letter-spacing: 0.03em;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      text-transform: uppercase;
+    }
+    .leave-section-header.approved { color: var(--c1); }
+    .leave-section-header.pending  { color: #F0C060; }
+    .leave-section-header.rejected { color: var(--c4); opacity: 0.6; }
 
     /* FORM */
     .form-wrap { padding: 0 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -404,7 +430,7 @@
       outline: none;
     }
     .form-group input:focus, .form-group textarea:focus { border-color: var(--c2); }
-    .form-group textarea { min-height: 80px; resize: none; }
+    .form-group textarea { min-height: 120px; resize: none; overflow-y: hidden; }
     .submit-btn {
       width: 100%;
       padding: 16px;
@@ -514,21 +540,6 @@
       margin-left: 4px; vertical-align: middle;
       font-family: 'IBM Plex Sans Thai', sans-serif;
     }
-    /* REJECT MODAL STYLING */
-    #rejectModal {
-      display: none !important;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      z-index: 2000;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    #rejectModal.show {
-      display: flex !important;
-    }
   </style>
 </head>
 <body>
@@ -609,7 +620,7 @@
     </div>
     <div class="form-group">
       <label>ผู้มาแทน / หมายเหตุ</label>
-      <textarea id="coverNote" placeholder="ระบุชื่อผู้มาแทนหรือรายละเอียดการแลกเวร"></textarea>
+      <textarea id="coverNote" placeholder="ระบุชื่อผู้มาแทนหรือรายละเอียดการแลกเวร" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
     </div>
     <button class="submit-btn" onclick="doRequestLeave()">ส่งคำขอลา</button>
   </div>
@@ -655,7 +666,7 @@
       </div>
       <div class="dash-card" id="dc-overtime" onclick="filterStaff('overtime')">
         <div class="dc-num orange" id="numOvertime">0</div>
-        <div class="dc-label">⌛️ เลยเวลางาน</div>
+        <div class="dc-label">⏳️ เลยเวลางาน</div>
       </div>
       <div class="dash-card" id="dc-dayoff" onclick="filterStaff('dayoff')">
         <div class="dc-num purple" id="numDayOff">0</div>
@@ -681,6 +692,7 @@
     </div>
     <div id="reportContent" style="font-size:13px;color:#999;text-align:center;padding:16px;font-family:'IBM Plex Sans Thai',sans-serif">เลือกเดือนเพื่อดูรายงาน</div>
   </div>
+
 </div>
 
 <script>
@@ -697,7 +709,7 @@
   }
 
   // ===== CONFIG =====
-  var API_URL  = 'https://script.google.com/macros/s/AKfycbz6Mo-JCeaPmT2bWW46MZ9dcJSdNKmWExEeJYyHgyoDgedNk2lLys6QltanFsBnjGPk2Q/exec';
+  var API_URL = 'https://script.google.com/macros/s/AKfycbx02X5kM_ot2N9b79Mpybqh-s3wkU08vCKvDDW6Ef46l3UmILXpbK_PTlOD8twooUAXUw/exec';
   var LIFF_ID  = '2009671008-1OVmbvuC';
   var myLineId = '', myName = '', myIsBoss = false;
   var currentScreen = 'screenMain';
@@ -748,20 +760,24 @@
       myName = d.name || myName;
 
       var uiStatus;
-      if (d.clockOut) {
+      var _st = (d.status || '').toLowerCase().trim();
+      if (_st === 'day off') {
+        uiStatus = 'dayoff';
+      } else if (_st === 'leave' || _st === 'on leave') {
+        // FIX #2: คนลา (อนุมัติแล้ว) ต้องขึ้น On Leave ไม่ใช่ Absent
+        uiStatus = 'onleave';
+      } else if (d.clockOut) {
         uiStatus = 'offwork';
       } else if (d.clockIn) {
         uiStatus = 'inwork';
-      } else if (d.status === 'Day Off') {
-        uiStatus = 'dayoff';
-      } else if (d.status === 'Leave' || d.status === 'Absent') {
+      } else if (_st === 'absent') {
         uiStatus = 'absent';
       } else {
         uiStatus = 'standby';
       }
 
-      var _lbl = { inwork: 'In Work', standby: 'Standby', offwork: 'Off Work', absent: 'Absent', dayoff: 'Day Off' };
-      var _col = { inwork: ' green',  standby: '',         offwork: ' blue',    absent: ' pink',  dayoff: ' purple' };
+      var _lbl = { inwork: 'In Work', standby: 'Standby', offwork: 'Off Work', absent: 'Absent', dayoff: 'Day Off', onleave: 'On Leave' };
+      var _col = { inwork: ' green',  standby: '',         offwork: ' blue',    absent: ' pink',  dayoff: ' purple', onleave: ' green' };
 
       var badge = document.getElementById('statusBadge');
       document.getElementById('statusText').textContent = _lbl[uiStatus];
@@ -771,7 +787,7 @@
       document.getElementById('statCIn').textContent     = d.clockIn  || '--';
       document.getElementById('statCOut').textContent    = d.clockOut || '--';
 
-      applyTodayDisable(d.clockIn, d.clockOut);
+      applyTodayDisable(d.clockIn, d.clockOut, d.clockDate);
       if (d.isBoss) { document.getElementById('btnDashboard').style.display = 'flex'; }
     }).catch(function() {
       document.getElementById('statusText').textContent = 'โหลดไม่ได้';
@@ -868,15 +884,24 @@
   }
 
   // ===== ACTIONS =====
-  function applyTodayDisable(clockIn, clockOut) {
+  function applyTodayDisable(clockIn, clockOut, clockDate) {
+    // FIX #1b: ตรวจสอบว่า clockIn/clockOut เป็นของวันนี้ไหม
+    // ถ้า backend ส่ง clockDate มา ให้ compare กับวันนี้
+    // ถ้าไม่ส่งมา ให้ fall through (เพื่อ backward compatibility)
+    var today = new Date();
+    var todayStr = today.getFullYear() + '-' +
+                   String(today.getMonth()+1).padStart(2,'0') + '-' +
+                   String(today.getDate()).padStart(2,'0');
+    var isToday = !clockDate || clockDate === todayStr;
+
     var btnCI = document.querySelector('.action-btn.btn-green');
     var btnCO = document.querySelector('.action-btn.btn-pink');
-    if (btnCI && clockIn) {
+    if (btnCI && clockIn && isToday) {
       btnCI.classList.add('btn-done'); btnCI.disabled = true;
       var t2ci = btnCI.querySelector('.t2');
       if (t2ci) t2ci.textContent = '✓ บันทึกแล้ว ' + clockIn;
     }
-    if (btnCO && clockOut) {
+    if (btnCO && clockOut && isToday) {
       btnCO.classList.add('btn-done'); btnCO.disabled = true;
       var t2co = btnCO.querySelector('.t2');
       if (t2co) t2co.textContent = '✓ บันทึกแล้ว ' + clockOut;
@@ -904,7 +929,8 @@
     callServer('checkOut', [myLineId]).then(function(d) {
       hideLoading();
       if (d.success) {
-        showToast(d.message, 'success');
+        // FIX #1a: 'date' ไม่ได้ defined ใน scope นี้ → ใช้ d.message จาก server แทน
+        showToast(d.message || '✅ Clock out สำเร็จ', 'success');
         histLoaded = false;
         loadUserStatus();
       } else showToast(d.message || 'เกิดข้อผิดพลาด','error');
@@ -913,11 +939,11 @@
 
   function doRequestLeave() {
     var date = document.getElementById('leaveDate').value;
-    var note = document.getElementById('coverNote').value;
+   var note = document.getElementById('coverNote').value;
     if (!date)     { showToast('กรุณาเลือกวันที่ลา','error'); return; }
     if (!myLineId) { showToast('ยังไม่ได้ login LINE','error'); return; }
     showLoading('กำลังส่งคำขอลา...');
-    callServer('requestLeave', [myLineId, date, note]).then(function(d) {
+    callServer('requestLeave', [myLineId, myName, date, '', '', note]).then(function(d) {
       hideLoading();
       if (d.success) {
         showToast(d.message, 'success');
@@ -934,11 +960,7 @@
     if (!myLineId) return;
     histLoaded = true;
     callServer('getMyHistory', [myLineId]).then(function(d) {
-      if (!d.success) {
-        document.getElementById('attendList').innerHTML = '<div class="empty-state">ไม่พบข้อมูล (ตรวจสอบ LINE ID ในชีต)</div>';
-        document.getElementById('leaveList').innerHTML  = '<div class="empty-state">ไม่พบข้อมูล</div>';
-        return;
-      }
+      if (!d.success) return;
       renderAttendList(d.attendance || d.rows || []);
       renderLeaveList(d.leaves || []);
     }).catch(function() {
@@ -987,11 +1009,31 @@
   var _allMembers = [];
 
   function getMemberStatus(m) {
-    if (m.status === 'Day Off')                return 'dayoff';
-    if (m.clockOut || m.status === 'Off work') return 'offwork';
-    if (m.clockIn  || m.status === 'In work')  return 'inwork';
-    if (m.status === 'Leave')                  return 'onleave';
-    if (m.isOvertime)                          return 'overtime';
+    var st = (m.status || '').toLowerCase().trim();
+
+    // FIX #2: ตรวจ Day Off และ Leave ก่อน ไม่อย่างนั้นคนลาที่ยังไม่มี clockIn จะขึ้นเป็น Standby
+    if (st === 'day off')                              return 'dayoff';
+    if (st === 'leave' || st === 'on leave')           return 'onleave';
+    if (st === 'absent')                               return 'absent';
+
+    if (m.clockOut || st === 'off work')               return 'offwork';
+    if (m.clockIn  || st === 'in work')                return 'inwork';
+    if (m.isOvertime)                                  return 'overtime';
+
+    // FIX #4: ถ้าไม่ได้ clock in เลย และเลยเวลาเริ่มงาน + 1 ชั่วโมงแล้ว → ขาดงาน
+    // backend ต้องส่ง m.workStart เป็น "HH:MM" และ m.isAbsent = true สำหรับ auto-absent
+    if (m.isAbsent) return 'absent';
+    if (!m.clockIn && m.workStart) {
+      var now   = new Date();
+      var todSt = now.getFullYear() + '-' +
+                  String(now.getMonth()+1).padStart(2,'0') + '-' +
+                  String(now.getDate()).padStart(2,'0');
+      var startParts = m.workStart.split(':');
+      var threshold  = new Date(todSt);
+      threshold.setHours(parseInt(startParts[0]) + 1, parseInt(startParts[1] || 0), 0, 0);
+      if (now >= threshold) return 'absent';
+    }
+
     return 'standby';
   }
 
@@ -1010,11 +1052,14 @@
     callServer('getDashboardData', [myLineId]).then(function(d) {
       if (!d.success) return;
       _allMembers = d.members || d.staff || [];
-      var cnt = { inwork: 0, standby: 0, offwork: 0, overtime: 0, dayoff: 0, onleave: 0 };
-      _allMembers.forEach(function(m) { cnt[getMemberStatus(m)]++; });
-      document.getElementById('numInWork').textContent   = cnt.inwork;
-      document.getElementById('numStandBy').textContent  = cnt.standby;
-      document.getElementById('numOffWork').textContent  = cnt.offwork;
+      var cnt = { inwork: 0, standby: 0, offwork: 0, overtime: 0, dayoff: 0, onleave: 0, absent: 0 };
+      _allMembers.forEach(function(m) {
+        var s = getMemberStatus(m);
+        if (cnt[s] !== undefined) cnt[s]++;
+      });
+      document.getElementById('numInWork').textContent  = cnt.inwork;
+      document.getElementById('numStandBy').textContent = cnt.standby;
+      document.getElementById('numOffWork').textContent = cnt.offwork;
       document.getElementById('numOvertime').textContent = cnt.overtime;
       document.getElementById('numDayOff').textContent   = cnt.dayoff;
       document.getElementById('numOnLeave').textContent  = cnt.onleave;
@@ -1033,13 +1078,14 @@
       el.innerHTML = '<div class="empty-state">' + (currentFilter ? 'ไม่มีพนักงานในสถานะนี้' : 'ไม่มีข้อมูลพนักงาน') + '</div>';
       return;
     }
-    var _lbl = { inwork: 'In Work', standby: 'Standby', offwork: 'Off Work', overtime: '⌛️ เลยเวลางาน', dayoff: 'Day Off', onleave: 'On Leave' };
+    var _lbl = { inwork: 'In Work', standby: 'Standby', offwork: 'Off Work', overtime: '⏳️ เลยเวลางาน', dayoff: 'Day Off', onleave: 'On Leave', absent: 'Absent' };
     el.innerHTML = list.map(function(m){
       var sc     = getMemberStatus(m);
       var detail = m.clockIn ? (m.isLate ? '⚠️ เข้าLate ' + m.clockIn : '⏰ เข้า ' + m.clockIn) : 'ยังไม่ได้ clock in';
-      if (sc === 'dayoff')   detail = '📆 วันหยุด';
-      if (sc === 'overtime') detail = '⌛️ เลยเวลางาน';
-      if (sc === 'onleave')  detail = '🌴 ลางาน';
+      if (sc === 'dayoff')  detail = '📆 วันหยุด';
+      if (sc === 'overtime') detail = '⏳️ เลยเวลางาน';
+      if (sc === 'onleave')  detail = '🌴 ลางาน (อนุมัติแล้ว)';
+      if (sc === 'absent')   detail = '❌ ขาดงาน';
       if (m.clockOut) detail += ' → ออก ' + m.clockOut;
       return '<div class="staff-item">' +
         '<div class="avatar">' + (m.name||'?').charAt(0) + '</div>' +
@@ -1051,20 +1097,71 @@
 
   function renderDashLeaveList(rows) {
     var el = document.getElementById('dashLeaveList');
-    if (!rows.length) { el.innerHTML = '<div class="empty-state">ไม่มีคำขอลาที่รออนุมัติ</div>'; return; }
-    el.innerHTML = rows.map(function(r){
-      return '<div class="leave-item ' + (r.status||'pending') + '" id="leave-item-' + r.id + '">' +
-        '<div class="l-head"><span class="l-date">👤 ' + r.name + '</span>' +
-        '<span class="l-status ' + (r.status||'pending') + '">' +
-        (r.status==='approved' ? 'อนุมัติ' : r.status==='rejected' ? 'ไม่อนุมัติ' : 'รอดำเนินการ') +
-        '</span></div>' +
-        '<div class="l-cover">📅 วันที่ลา: ' + fmtDate(r.leaveDate) + '</div>' +
-        (r.coverNote ? '<div class="l-cover">👤 ผู้แทน: ' + r.coverNote + '</div>' : '') +
-        '<div class="btn-row">' +
-        '<button class="approve-btn" onclick="doApproveLeave(\'' + r.id + '\', true)">✅ อนุมัติ</button>' +
-        '<button class="reject-btn"  onclick="doApproveLeave(\'' + r.id + '\', false)">❌ ไม่อนุมัติ</button>' +
-        '</div></div>';
-    }).join('');
+    if (!rows.length) { el.innerHTML = '<div class="empty-state">ไม่มีคำขอลา</div>'; return; }
+
+    var today    = new Date().toISOString().slice(0,10);
+    var approved = rows.filter(function(r){ return r.status === 'approved'; });
+    var pending  = rows.filter(function(r){ return !r.status || r.status === 'pending'; });
+    var rejected = rows.filter(function(r){ return r.status === 'rejected'; });
+
+    // Sort approved by leaveDate ascending
+    approved.sort(function(a,b){ return (a.leaveDate||'') > (b.leaveDate||'') ? 1 : -1; });
+
+    var html = '';
+
+    // ── APPROVED SECTION ──────────────────────────────────────────
+    if (approved.length) {
+      html += '<div class="leave-section-header approved">✅ อนุมัติแล้ว (' + approved.length + ')</div>';
+      html += approved.map(function(r){
+        var isPast = r.leaveDate && r.leaveDate < today;
+        return '<div class="leave-item approved">' +
+          '<div class="l-head">' +
+          '<span class="l-date">👤 ' + (r.name||'-') + '</span>' +
+          '<span class="l-status approved">' + (isPast ? 'ลาแล้ว' : 'อนุมัติ') + '</span>' +
+          '</div>' +
+          '<div class="l-cover">📅 วันที่ลา: <strong>' + fmtDate(r.leaveDate) + '</strong></div>' +
+          (r.coverNote ? '<div class="l-cover">👤 ผู้แทน: ' + r.coverNote + '</div>' : '') +
+          (r.note ? '<div class="l-cover">📝 ' + r.note + '</div>' : '') +
+          '</div>';
+      }).join('');
+    }
+
+    // ── PENDING SECTION ───────────────────────────────────────────
+    if (pending.length) {
+      html += '<div class="leave-section-header pending">⏳ รออนุมัติ (' + pending.length + ')</div>';
+      html += pending.map(function(r){
+        return '<div class="leave-item pending" id="leave-item-' + r.id + '">' +
+          '<div class="l-head">' +
+          '<span class="l-date">👤 ' + (r.name||'-') + '</span>' +
+          '<span class="l-status pending">รอดำเนินการ</span>' +
+          '</div>' +
+          '<div class="l-cover">📅 วันที่ลา: ' + fmtDate(r.leaveDate) + '</div>' +
+          (r.coverNote ? '<div class="l-cover">👤 ผู้แทน: ' + r.coverNote + '</div>' : '') +
+          (r.note ? '<div class="l-cover">📝 ' + r.note + '</div>' : '') +
+          '<div class="btn-row">' +
+          '<button class="approve-btn" onclick="doApproveLeave(\'' + r.id + '\', true)">✅ อนุมัติ</button>' +
+          '<button class="reject-btn"  onclick="doApproveLeave(\'' + r.id + '\', false)">❌ ไม่อนุมัติ</button>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    // ── REJECTED SECTION (collapsed) ──────────────────────────────
+    if (rejected.length) {
+      html += '<div class="leave-section-header rejected">❌ ไม่อนุมัติ (' + rejected.length + ')</div>';
+      html += rejected.map(function(r){
+        return '<div class="leave-item rejected">' +
+          '<div class="l-head">' +
+          '<span class="l-date">👤 ' + (r.name||'-') + '</span>' +
+          '<span class="l-status rejected">ไม่อนุมัติ</span>' +
+          '</div>' +
+          '<div class="l-cover">📅 วันที่ลา: ' + fmtDate(r.leaveDate) + '</div>' +
+          (r.rejectReason ? '<div class="l-cover">💬 ' + r.rejectReason + '</div>' : '') +
+          '</div>';
+      }).join('');
+    }
+
+    el.innerHTML = html || '<div class="empty-state">ไม่มีคำขอลา</div>';
   }
 
   var _pendingRejectRowId = null;
@@ -1101,14 +1198,14 @@
     if (!approved) {
       _pendingRejectRowId = rowId;
       document.getElementById('rejectReasonInput').value = '';
-      document.getElementById('rejectModal').classList.add('show');
+      document.getElementById('rejectModal').style.display = 'flex';
       return;
     }
     _submitApproval(rowId, true, '');
   }
 
   function cancelReject() {
-    document.getElementById('rejectModal').classList.remove('show');
+    document.getElementById('rejectModal').style.display = 'none';
     var rowId = _pendingRejectRowId;
     _pendingRejectRowId = null;
     if (rowId !== null) { delete _processedRows[rowId]; _unlockButtons(rowId); }
@@ -1116,7 +1213,7 @@
 
   function confirmReject() {
     var reason = document.getElementById('rejectReasonInput').value.trim();
-    document.getElementById('rejectModal').classList.remove('show');
+    document.getElementById('rejectModal').style.display = 'none';
     var rowId = _pendingRejectRowId;
     _pendingRejectRowId = null;
     _submitApproval(rowId, false, reason);
@@ -1227,6 +1324,7 @@
         '<td style="text-align:center;padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + m.days + '</td>' +
         '<td style="text-align:center;color:' + lc + ';padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + m.late + '</td>' +
         '<td style="text-align:center;padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + (m.leave||0) + '</td>' +
+        '<td>' + (m.absent||0) + '</td>' +
         '<td style="text-align:center;padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + pct + '%</td>' +
         '</tr>';
     }).join('');
@@ -1236,13 +1334,14 @@
       '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">เข้างาน</th>' +
       '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">สาย</th>' +
       '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">ลา</th>' +
+      '<th>ขาด</th>' +
       '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">ตรงเวลา</th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table>';
   }
 </script>
 
 <!-- ===== REJECT REASON MODAL ===== -->
-<div id="rejectModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);z-index:2000;align-items:center;justify-content:center;flex-direction:column;">
+<div id="rejectModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.65);z-index:2000;align-items:center;justify-content:center;">
   <div style="background:#1A2035;border-radius:16px;padding:24px 20px;width:88%;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.5);">
     <div style="color:#fff;font-size:16px;font-weight:700;margin-bottom:14px;font-family:'IBM Plex Sans Thai',sans-serif;">❌ ระบุเหตุผลที่ไม่อนุมัติ</div>
     <textarea id="rejectReasonInput" rows="3"
