@@ -433,20 +433,30 @@
     }
     .form-group input:focus, .form-group textarea:focus { border-color: var(--c2); }
     .form-group textarea { min-height: 120px; resize: none; overflow-y: hidden; }
+    .form-group input[type="date"] {
+      -webkit-appearance: none;
+      appearance: none;
+      display: block;
+    }
     .submit-btn {
       width: 100%;
       padding: 16px;
       border-radius: 14px;
       border: none;
-      background: var(--grad);
+      background: linear-gradient(135deg, #A060E8, #F060C0);
       color: #fff;
       font-size: 16px;
       font-weight: 700;
       cursor: pointer;
-      margin-top: 4px;
+      margin-top: 8px;
       font-family: 'IBM Plex Sans Thai', sans-serif;
+      box-shadow: 0 4px 16px rgba(160, 96, 232, 0.35);
+      transition: transform 0.1s, box-shadow 0.1s;
     }
-    .submit-btn:active { opacity: 0.85; }
+    .submit-btn:active {
+      transform: scale(0.98);
+      box-shadow: 0 2px 8px rgba(160, 96, 232, 0.25);
+    }
 
     /* SCREENS */
     .screen { display: none; padding-bottom: 24px; }
