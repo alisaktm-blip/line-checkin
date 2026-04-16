@@ -361,7 +361,7 @@
     .leave-item .l-date {
       font-size: 14px;
       font-weight: 600;
-      font-family: 'Outfit', 'Inter', sans-serif;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
     }
     .leave-item .l-status {
       font-size: 12px;
@@ -420,6 +420,8 @@
     }
     .form-group input, .form-group textarea {
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
       background: var(--card2);
       border: 1px solid var(--border);
       border-radius: 12px;
@@ -442,7 +444,7 @@
       font-weight: 700;
       cursor: pointer;
       margin-top: 4px;
-      font-family: 'Outfit', 'Inter', sans-serif;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
     }
     .submit-btn:active { opacity: 0.85; }
 
@@ -1324,17 +1326,18 @@
         '<td style="text-align:center;padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + m.days + '</td>' +
         '<td style="text-align:center;color:' + lc + ';padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + m.late + '</td>' +
         '<td style="text-align:center;padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + (m.leave||0) + '</td>' +
-        '<td>' + (m.absent||0) + '</td>' +
+        '<td style="text-align:center;padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + (m.absent||0) + '</td>' +
         '<td style="text-align:center;padding:6px 8px;border-bottom:1px solid #eee;font-family:\'Outfit\',\'Inter\',sans-serif">' + pct + '%</td>' +
         '</tr>';
     }).join('');
-    el.innerHTML = '<table style="width:100%;border-collapse:collapse;font-size:13px">' +
+    el.style.overflowX = 'auto';
+    el.innerHTML = '<table style="width:100%;min-width:340px;border-collapse:collapse;font-size:13px">' +
       '<thead><tr style="background:#f0f4f8">' +
       '<th style="padding:8px;text-align:left;font-family:\'IBM Plex Sans Thai\',sans-serif">ชื่อ</th>' +
       '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">เข้างาน</th>' +
       '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">สาย</th>' +
       '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">ลา</th>' +
-      '<th>ขาด</th>' +
+      '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">ขาด</th>' +
       '<th style="padding:8px;text-align:center;font-family:\'IBM Plex Sans Thai\',sans-serif">ตรงเวลา</th>' +
       '</tr></thead><tbody>' + rows + '</tbody></table>';
   }
